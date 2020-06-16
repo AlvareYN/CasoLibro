@@ -8,7 +8,11 @@
   const client = new ApolloClient({
     uri: "http://localhost:1337/graphql"
   });
-
+  let carrito = [];
+  function agregarAlCarro(event){
+    carrito.push(event.detail)
+    carrito = carrito;
+  }
   const GET_BOOKS = gql`
     query {
       libros {
@@ -52,7 +56,6 @@
     `
       })
       .then(result => {
-        console.log(result);
         isModalShown = true;
         modalData = result.data;
       })
@@ -73,7 +76,7 @@
   }
 </style>
 
-<NavBar />
+<NavBar {carrito}/>
 {#await $books}
   Loading...
 {:then result}
@@ -90,5 +93,5 @@
   Error: {error}
 {/await}
 {#if isModalShown}
-  <Modal {...modalData} on:closeModal={()=>{isModalShown=false}}/>
+  <Modal {...modalData} on:closeModal={()=>{isModalShown=false}} on:addToCarr={agregarAlCarro}/>
 {/if}

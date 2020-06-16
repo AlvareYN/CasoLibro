@@ -2,7 +2,7 @@
   export let libro;
   import { createEventDispatcher } from "svelte";
   let dispatch = createEventDispatcher();
-
+  let cantidad = 1;
   function closeModal(event) {
     dispatch("closeModal");
   }
@@ -12,6 +12,14 @@
   });
   let monyy = money.format(libro.valor);
   let hasOffer = true ? libro.oferta != 1 : false;
+  function clickHandler(){
+    if (hasOffer) {
+      dispatch('addToCarr',{cantidad:cantidad,valor:libro.valor - (libro.valor * libro.oferta),nombre:libro.Nombre,url:libro.caratula.url});  
+    }else{
+      dispatch('addToCarr',{cantidad:cantidad,valor:libro.valor,nombre:libro.Nombre,url:libro.caratula.url});
+    }
+    
+  }
 </script>
 
 <style>
@@ -21,6 +29,9 @@
   }
   .max-text-width {
     max-width: 150px;
+  }
+  .abitofpadding {
+    padding: 1rem;
   }
 </style>
 
@@ -36,8 +47,12 @@
           <br />
           <div class="has-text-centered">
             {#if hasOffer}
-              <p class="title"><strike>{monyy} </strike></p>
-              <p class="title">{money.format(libro.valor-(libro.valor*libro.oferta))} </p>
+              <p class="title">
+                <strike>{monyy}</strike>
+              </p>
+              <p class="title">
+                {money.format(libro.valor - libro.valor * libro.oferta)}
+              </p>
             {:else}
               <p class="title">{monyy}</p>
             {/if}
@@ -81,8 +96,22 @@
           </div>
 
         </div>
+
       </article>
+      <div class="container box has-text-left abitofpadding">
+        <div class="control">
+          <input min="1" bind:value={cantidad} type="number" style="width:10%"/>
+          <button class="button is-success" on:click={clickHandler}>
+            <span class="icon is-small">
+              <i class="fas fa-plus" />
+            </span>
+            <span>agregar al carrito</span>
+          </button>
+        </div>
+
+      </div>
     </div>
+
   </div>
   <button
     class="modal-close is-large"
